@@ -8,7 +8,7 @@ public class SpecialCard extends Card {
 
     @Override
     public String toString() {
-        String s = this.getClass().toString()+":"+ super.toString();
+        String s = this.getClass().toString() + ":" + super.toString();
         return s;
     }
 }

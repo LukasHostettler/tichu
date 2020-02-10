@@ -16,30 +16,32 @@ class CardCollectionTest {
     private Card redQueen;
     private Card blueQueen;
     private Card dragon;
-    CardCollectionTest(){
+
+    CardCollectionTest() {
         blackKing = DeckFactory.createPokerCard(13, Card.Color.BLACK);
-        redKing = DeckFactory.createPokerCard(13,Card.Color.RED);
-        blueKing = DeckFactory.createPokerCard(13,Card.Color.BLUE);
-        redQueen = DeckFactory.createPokerCard(12,Card.Color.RED);
-        blueQueen = DeckFactory.createPokerCard(12,Card.Color.BLUE);
+        redKing = DeckFactory.createPokerCard(13, Card.Color.RED);
+        blueKing = DeckFactory.createPokerCard(13, Card.Color.BLUE);
+        redQueen = DeckFactory.createPokerCard(12, Card.Color.RED);
+        blueQueen = DeckFactory.createPokerCard(12, Card.Color.BLUE);
 
         phoenix = DeckFactory.createPhoenix();
         dragon = DeckFactory.createDragon();
     }
-    private void addBlueRedKing(CardCollection c){
+
+    private void addBlueRedKing(CardCollection c) {
         c.add(blueKing);
         c.add(redKing);
     }
 
-    private void addBlueRedQueen(CardCollection c){
+    private void addBlueRedQueen(CardCollection c) {
         c.add(redQueen);
         c.add(blueQueen);
     }
 
     @Test
-    void singleCardIsValidSingle(){
+    void singleCardIsValidSingle() {
         var deck = DeckFactory.createDeck();
-        for (var card:deck) {
+        for (var card : deck) {
             var singleCardCollection = new CardCollection();
             singleCardCollection.add(card);
             assertEquals(singleCardCollection.isSingle(), true);
@@ -48,22 +50,22 @@ class CardCollectionTest {
     }
 
     @Test
-    void twoKingsIsAValidPair(){
+    void twoKingsIsAValidPair() {
         var possiblePair = new CardCollection();
         addBlueRedKing(possiblePair);
-        assertEquals(possiblePair.isPair(),true);
+        assertEquals(possiblePair.isPair(), true);
     }
 
     @Test
-    void dragonIsNotAllowedInPair(){
+    void dragonIsNotAllowedInPair() {
         var possiblePair = new CardCollection();
         possiblePair.add(blackKing);
         possiblePair.add(dragon);
-        assertEquals(possiblePair.isPair(),false);
+        assertEquals(possiblePair.isPair(), false);
     }
 
     @Test
-    void aKingAndAPhoenixIsAValidPair(){
+    void aKingAndAPhoenixIsAValidPair() {
         var possiblePair = new CardCollection();
         possiblePair.add(blackKing);
         possiblePair.add(phoenix);
@@ -71,50 +73,51 @@ class CardCollectionTest {
     }
 
 
-
     @Test
-    void threeKingsIsAValidTripple(){
-        var possibleTripple = new CardCollection();
-        possibleTripple.add(blackKing);
-        addBlueRedKing(possibleTripple);
-        assertEquals(possibleTripple.isTriple(),true);
+    void threeKingsIsAValidTriple() {
+        var possibleTriple = new CardCollection();
+        possibleTriple.add(blackKing);
+        addBlueRedKing(possibleTriple);
+        assertEquals(possibleTriple.isTriple(), true);
     }
 
     @Test
-    void twoKingsAndPhoenixIsValidTripple(){
-        var possibleTripple = new CardCollection();
-        possibleTripple.add(phoenix);
-        addBlueRedKing(possibleTripple);
-        assertEquals(possibleTripple.isTriple(),true);
+    void twoKingsAndPhoenixIsValidTriple() {
+        var possibleTriple = new CardCollection();
+        possibleTriple.add(phoenix);
+        addBlueRedKing(possibleTriple);
+        assertEquals(possibleTriple.isTriple(), true);
     }
 
     @Test
-    void twoPairsAndPhoenixIsValidFullHouse(){
+    void twoPairsAndPhoenixIsValidFullHouse() {
         var possibleFullhouse = new CardCollection();
         possibleFullhouse.add(phoenix);
         addBlueRedKing(possibleFullhouse);
         addBlueRedQueen(possibleFullhouse);
-        assertEquals(possibleFullhouse.isFullHouse(),true);
+        assertEquals(possibleFullhouse.isFullHouse(), true);
     }
+
     @Test
-    void threeKingsAndAPairOfQueensIsValidFullHouse(){
+    void threeKingsAndAPairOfQueensIsValidFullHouse() {
         var possibleFullhouse = new CardCollection();
         possibleFullhouse.add(blackKing);
         addBlueRedKing(possibleFullhouse);
         addBlueRedQueen(possibleFullhouse);
-        assertEquals(possibleFullhouse.isFullHouse(),true);
+        assertEquals(possibleFullhouse.isFullHouse(), true);
     }
+
     @Test
-    void twoPairsAndARandomCardIsInvalidFullHouse(){
+    void twoPairsAndARandomCardIsInvalidFullHouse() {
         var possibleFullhouse = new CardCollection();
         addBlueRedKing(possibleFullhouse);
         possibleFullhouse.add(DeckFactory.createPokerCard(2, Card.Color.RED));
         addBlueRedQueen(possibleFullhouse);
-        assertEquals(possibleFullhouse.isFullHouse(),false);
+        assertEquals(possibleFullhouse.isFullHouse(), false);
     }
 
     @Test
-    void fiveConsequtiveCardsIsValidStraight(){
+    void fiveConsequtiveCardsIsValidStraight() {
         var cards = new Card[]{
                 DeckFactory.createPokerCard(2, Card.Color.RED),
                 DeckFactory.createPokerCard(6, Card.Color.RED),
@@ -127,7 +130,7 @@ class CardCollectionTest {
     }
 
     @Test
-    void fourConsequtiveCardsAndPhoenixIsValidStraight(){
+    void fourConsequtiveCardsAndPhoenixIsValidStraight() {
         var cards = new Card[]{
                 DeckFactory.createPokerCard(7, Card.Color.RED),
                 DeckFactory.createPokerCard(6, Card.Color.RED),
@@ -140,7 +143,7 @@ class CardCollectionTest {
     }
 
     @Test
-    void MahjongIsPartOfValidStraight(){
+    void MahjongIsPartOfValidStraight() {
         var cards = new Card[]{
                 DeckFactory.createPokerCard(2, Card.Color.RED),
                 DeckFactory.createPokerCard(6, Card.Color.RED),
@@ -152,8 +155,9 @@ class CardCollectionTest {
         var possibleStraight = new CardCollection(Arrays.asList(cards));
         assertTrue(possibleStraight.isStraight());
     }
+
     @Test
-    void DragonDoesNotBelongInStraight(){
+    void DragonDoesNotBelongInStraight() {
         var cards = new Card[]{
                 DeckFactory.createPokerCard(11, Card.Color.RED),
                 DeckFactory.createPokerCard(13, Card.Color.RED),
@@ -164,8 +168,9 @@ class CardCollectionTest {
         var possibleStraight = new CardCollection(Arrays.asList(cards));
         assertFalse(possibleStraight.isStraight());
     }
+
     @Test
-    void PairsOfCardsIsValidPairsOfCard(){
+    void PairsOfCardsIsValidPairsOfCard() {
         var cards = new Card[]{
                 DeckFactory.createPokerCard(6, Card.Color.BLUE),
                 DeckFactory.createPokerCard(5, Card.Color.RED),
@@ -178,7 +183,7 @@ class CardCollectionTest {
     }
 
     @Test
-    void PairsOfCardsWithPhoenixIsValidPairsOfCard(){
+    void PairsOfCardsWithPhoenixIsValidPairsOfCard() {
         var cards = new Card[]{
                 DeckFactory.createPokerCard(6, Card.Color.BLUE),
                 DeckFactory.createPokerCard(5, Card.Color.RED),
@@ -191,7 +196,7 @@ class CardCollectionTest {
     }
 
     @Test
-    void PairsOfCardsWithTripletIsInvalidPairsOfCard(){
+    void PairsOfCardsWithTripletIsInvalidPairsOfCard() {
         var cards = new Card[]{
                 DeckFactory.createPokerCard(6, Card.Color.BLUE),
                 DeckFactory.createPokerCard(6, Card.Color.RED),
@@ -204,7 +209,7 @@ class CardCollectionTest {
     }
 
     @Test
-    void QuartetIsValidBomb(){
+    void QuartetIsValidBomb() {
         var cards = new Card[]{
                 DeckFactory.createPokerCard(6, Card.Color.BLUE),
                 DeckFactory.createPokerCard(6, Card.Color.BLACK),
@@ -213,4 +218,5 @@ class CardCollectionTest {
         };
         assertTrue(new CardCollection(Arrays.asList(cards)).isQuartetBomb());
     }
+
 }

@@ -6,14 +6,16 @@ import java.util.Arrays;
 import java.util.List;
 
 public class DeckFactory {
-    public static CardCollection createDeck(){
+    private static final List<Card.Color> validColors = Arrays.asList(Card.Color.RED, Card.Color.GREEN, Card.Color.BLUE, Card.Color.BLACK);
+
+    public static CardCollection createDeck() {
         var cards = new CardCollection();
         var cardValues = new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14};
-        for (var color: Card.Color.values()){
-            if(color == Card.Color.NONE)
+        for (var color : Card.Color.values()) {
+            if (color == Card.Color.NONE)
                 continue;
-            for(var value : cardValues){
-                var card = createPokerCard(value,color);
+            for (var value : cardValues) {
+                var card = createPokerCard(value, color);
                 cards.add(card);
             }
         }
@@ -23,29 +25,32 @@ public class DeckFactory {
         cards.add(createPhoenix());
         return cards;
     }
-    public static Card createDog(){
+
+    public static Card createDog() {
         return new Dog();
     }
-    public static Card createMahjong(){
+
+    public static Card createMahjong() {
         return new Mahjong();
     }
-    public static Card createDragon(){
+
+    public static Card createDragon() {
         return new Dragon();
     }
-    public static Card createPhoenix(){
+
+    public static Card createPhoenix() {
         return new Phoenix();
     }
-    private static final List<Card.Color> validColors = Arrays.asList(new Card.Color[]{Card.Color.RED,Card.Color.GREEN,Card.Color.BLUE,Card.Color.BLACK});
 
-    public static Card createPokerCard(int value, Card.Color color){
-        if(value<2 || value>13) throw new IllegalArgumentException("Value must be is between 2 and 13");
-        if(!validColors.contains(color)) throw new IllegalArgumentException("invalid color");
+    public static Card createPokerCard(int value, Card.Color color) {
+        if (value < 2 || value > 13) throw new IllegalArgumentException("Value must be is between 2 and 13");
+        if (!validColors.contains(color)) throw new IllegalArgumentException("invalid color");
         var card = new Card();
         card.color = color;
         card.value = value;
-        if(value == 5)
+        if (value == 5)
             card.accountValue = 5;
-        else if (value == 10 || value ==13)
+        else if (value == 10 || value == 13)
             card.accountValue = 10;
         else
             card.accountValue = 0;

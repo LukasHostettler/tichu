@@ -1,12 +1,13 @@
 package cards;
 
 public class Phoenix extends SpecialCard {
-    Phoenix(){
+    Phoenix() {
         accountValue = -25;
         color = Color.NONE;
 
     }
-    public void setValue(double value){
+
+    public void setValue(double value) {
         value = value;
     }
 

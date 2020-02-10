@@ -3,18 +3,24 @@ package combos;
 import cards.Card;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
 
 public class CardCollection extends ArrayList<Card> {
     public CardCollection() {
         super();
     }
 
-    private CardCollection(Iterable<Card> c) {
+    public CardCollection(Iterable<Card> c) {
         super();
         for (var card : c) {
+            if(card == null) {
+                throw new NullPointerException();
+            }
             this.add(card);
         }
     }
+
 
     private static int byValue(Card c1, Card c2) {
         return (int) (c1.getValue() - c2.getValue());
@@ -146,7 +152,28 @@ public class CardCollection extends ArrayList<Card> {
         return false;
     }
 
-    boolean isStraight(int size) {
-        return false;
+    boolean isStraight() {
+        if(size()<5)
+            return false;
+        var copy  = new CardCollection(this);
+        copy.sort(Card::compareTo);
+        var numSkips = 0;
+        if (copy.containsPhoenix()) {
+            numSkips = 1;
+            copy = copy.withoutPhoenix();
+        }
+        Double value = null;
+        for (var card: copy){
+            if (value != null) {
+                if (card.getValue() != value + 1.0) {
+                    numSkips -= 1;
+                }
+                if (numSkips < 0) {
+                    return false;
+                }
+            }
+            value = card.getValue();
+        }
+        return true;
     }
 }

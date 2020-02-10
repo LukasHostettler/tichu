@@ -2,7 +2,8 @@ package cards;
 
 import combos.CardCollection;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
 
 public class DeckFactory {
     public static CardCollection createDeck(){
@@ -34,8 +35,11 @@ public class DeckFactory {
     public static Card createPhoenix(){
         return new Phoenix();
     }
+    private static final List<Card.Color> validColors = Arrays.asList(new Card.Color[]{Card.Color.RED,Card.Color.GREEN,Card.Color.BLUE,Card.Color.BLACK});
 
     public static Card createPokerCard(int value, Card.Color color){
+        if(value<2 || value>13) throw new IllegalArgumentException("Value must be is between 2 and 13");
+        if(!validColors.contains(color)) throw new IllegalArgumentException("invalid color");
         var card = new Card();
         card.color = color;
         card.value = value;

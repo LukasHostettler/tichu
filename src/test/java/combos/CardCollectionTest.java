@@ -4,10 +4,7 @@ import cards.Card;
 import cards.DeckFactory;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -191,5 +188,29 @@ class CardCollectionTest {
                 DeckFactory.createPokerCard(6, Card.Color.RED),
         };
         assertTrue(new CardCollection(Arrays.asList(cards)).isConsequtivePair());
+    }
+
+    @Test
+    void PairsOfCardsWithTripletIsInvalidPairsOfCard(){
+        var cards = new Card[]{
+                DeckFactory.createPokerCard(6, Card.Color.BLUE),
+                DeckFactory.createPokerCard(6, Card.Color.RED),
+                DeckFactory.createPhoenix(),
+                DeckFactory.createPokerCard(7, Card.Color.RED),
+                DeckFactory.createPokerCard(6, Card.Color.GREEN),
+                DeckFactory.createPokerCard(5, Card.Color.BLUE)
+        };
+        assertFalse(new CardCollection(Arrays.asList(cards)).isConsequtivePair());
+    }
+
+    @Test
+    void QuartetIsValidBomb(){
+        var cards = new Card[]{
+                DeckFactory.createPokerCard(6, Card.Color.BLUE),
+                DeckFactory.createPokerCard(6, Card.Color.BLACK),
+                DeckFactory.createPokerCard(6, Card.Color.RED),
+                DeckFactory.createPokerCard(6, Card.Color.GREEN),
+        };
+        assertTrue(new CardCollection(Arrays.asList(cards)).isQuartetBomb());
     }
 }

@@ -4,6 +4,11 @@ import cards.Card;
 import cards.DeckFactory;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class CardCollectionTest {
@@ -109,6 +114,19 @@ class CardCollectionTest {
         possibleFullhouse.add(DeckFactory.createPokerCard(2, Card.Color.RED));
         addBlueRedQueen(possibleFullhouse);
         assertEquals(possibleFullhouse.isFullHouse(),false);
+    }
+
+    @Test
+    void fiveConsequtiveCardsIsValidStraight(){
+        var cards = new Card[]{
+                DeckFactory.createPokerCard(2, Card.Color.RED),
+                DeckFactory.createPokerCard(6, Card.Color.RED),
+                DeckFactory.createPokerCard(4, Card.Color.GREEN),
+                DeckFactory.createPokerCard(5, Card.Color.RED),
+                DeckFactory.createPokerCard(3, Card.Color.RED),
+        };
+        var possibleStraight = new CardCollection(Arrays.asList(cards));
+        assertTrue(possibleStraight.isStraight());
     }
 
 }

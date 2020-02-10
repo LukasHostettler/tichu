@@ -3,8 +3,8 @@ package combos;
 import cards.Card;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Enumeration;
+import java.util.Arrays;
+
 
 public class CardCollection extends ArrayList<Card> {
     public CardCollection() {
@@ -152,7 +152,7 @@ public class CardCollection extends ArrayList<Card> {
         return false;
     }
 
-    boolean isStraight() {
+    public boolean isStraight() {
         if(size()<5)
             return false;
         var copy  = new CardCollection(this);
@@ -175,5 +175,49 @@ public class CardCollection extends ArrayList<Card> {
             value = card.getValue();
         }
         return true;
+    }
+
+
+    boolean isConsequtivePair(){
+        if( size()<4 || size()%2 ==1 )
+            return false;
+        if(containsNonComboCard())
+            return false;
+        var hasPhoenix = this.containsPhoenix();
+        var withoutPhoenix  = this.withoutPhoenix();
+        withoutPhoenix.sort(Card::compareTo);
+        Double lastValue = null;
+        for(int index= 0;index<withoutPhoenix.size();index=index+2){
+            var cards =  new Card[]{withoutPhoenix.get(index), withoutPhoenix.get(index+1)};
+            var testPair = new CardCollection(Arrays.asList(cards));
+            if(testPair.isPair()){
+                if(lastValue == null || cards[0].getValue() == lastValue + 1)
+                    lastValue = cards[0].getValue();
+                else return false;
+            }
+            else if(hasPhoenix){
+                hasPhoenix = false;
+                lastValue = cards[0].getValue();
+                index-=1; // test the other pair as well.
+            }
+            else
+                return false;
+        }
+        return true;
+    }
+
+
+    boolean isQuartetBomb(){
+        if(this.size()!=4)
+            return false;
+        if(this.containsPhoenix())
+            return false;
+        return isQuadruple();
+    }
+
+    boolean isStraightBomb(){
+        if(isStraight() && allEqualColor())
+            return true;
+        return false;
     }
 }

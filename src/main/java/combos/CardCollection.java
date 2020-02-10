@@ -14,7 +14,7 @@ public class CardCollection extends ArrayList<Card> {
     public CardCollection(Iterable<Card> c) {
         super();
         for (var card : c) {
-            if(card == null) {
+            if (card == null) {
                 throw new NullPointerException();
             }
             this.add(card);
@@ -132,20 +132,20 @@ public class CardCollection extends ArrayList<Card> {
                 return true;
             else {
                 // or single triple
-                var tripple1 = new CardCollection(withoutPhoenix.subList(0, 3));
-                var tripple2 = new CardCollection(withoutPhoenix.subList(1, 4));
-                return tripple1.isTriple() || tripple2.isTriple();
+                var triple1 = new CardCollection(withoutPhoenix.subList(0, 3));
+                var triple2 = new CardCollection(withoutPhoenix.subList(1, 4));
+                return triple1.isTriple() || triple2.isTriple();
             }
         }
         copy.sort(CardCollection::byValue);
 
-        var tripple1 = new CardCollection(copy.subList(0, 3));
-        if (tripple1.isTriple()) {
+        var triple1 = new CardCollection(copy.subList(0, 3));
+        if (triple1.isTriple()) {
             var pair1 = new CardCollection(copy.subList(3, 5));
             return pair1.isPair();
         }
-        var tripple2 = new CardCollection(copy.subList(2, 5));
-        if (tripple2.isTriple()) {
+        var triple2 = new CardCollection(copy.subList(2, 5));
+        if (triple2.isTriple()) {
             var pair2 = new CardCollection(copy.subList(0, 2));
             return pair2.isPair();
         }
@@ -153,9 +153,9 @@ public class CardCollection extends ArrayList<Card> {
     }
 
     public boolean isStraight() {
-        if(size()<5)
+        if (size() < 5)
             return false;
-        var copy  = new CardCollection(this);
+        var copy = new CardCollection(this);
         copy.sort(Card::compareTo);
         var numSkips = 0;
         if (copy.containsPhoenix()) {
@@ -163,7 +163,7 @@ public class CardCollection extends ArrayList<Card> {
             copy = copy.withoutPhoenix();
         }
         Double value = null;
-        for (var card: copy){
+        for (var card : copy) {
             if (value != null) {
                 if (card.getValue() != value + 1.0) {
                     numSkips -= 1;
@@ -178,46 +178,42 @@ public class CardCollection extends ArrayList<Card> {
     }
 
 
-    boolean isConsequtivePair(){
-        if( size()<4 || size()%2 ==1 )
+    boolean isConsequtivePair() {
+        if (size() < 4 || size() % 2 == 1)
             return false;
-        if(containsNonComboCard())
+        if (containsNonComboCard())
             return false;
         var hasPhoenix = this.containsPhoenix();
-        var withoutPhoenix  = this.withoutPhoenix();
+        var withoutPhoenix = this.withoutPhoenix();
         withoutPhoenix.sort(Card::compareTo);
         Double lastValue = null;
-        for(int index= 0;index<withoutPhoenix.size();index=index+2){
-            var cards =  new Card[]{withoutPhoenix.get(index), withoutPhoenix.get(index+1)};
+        for (int index = 0; index < withoutPhoenix.size(); index = index + 2) {
+            var cards = new Card[]{withoutPhoenix.get(index), withoutPhoenix.get(index + 1)};
             var testPair = new CardCollection(Arrays.asList(cards));
-            if(testPair.isPair()){
-                if(lastValue == null || cards[0].getValue() == lastValue + 1)
+            if (testPair.isPair()) {
+                if (lastValue == null || cards[0].getValue() == lastValue + 1)
                     lastValue = cards[0].getValue();
                 else return false;
-            }
-            else if(hasPhoenix){
+            } else if (hasPhoenix) {
                 hasPhoenix = false;
                 lastValue = cards[0].getValue();
-                index-=1; // test the other pair as well.
-            }
-            else
+                index -= 1; // test the other pair as well.
+            } else
                 return false;
         }
         return true;
     }
 
 
-    boolean isQuartetBomb(){
-        if(this.size()!=4)
+    boolean isQuartetBomb() {
+        if (this.size() != 4)
             return false;
-        if(this.containsPhoenix())
+        if (this.containsPhoenix())
             return false;
         return isQuadruple();
     }
 
-    boolean isStraightBomb(){
-        if(isStraight() && allEqualColor())
-            return true;
-        return false;
+    boolean isStraightBomb() {
+        return isStraight() && allEqualColor();
     }
 }

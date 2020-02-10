@@ -141,4 +141,30 @@ class CardCollectionTest {
         var possibleStraight = new CardCollection(Arrays.asList(cards));
         assertTrue(possibleStraight.isStraight());
     }
+
+    @Test
+    void MahjongIsPartOfValidStraight(){
+        var cards = new Card[]{
+                DeckFactory.createPokerCard(2, Card.Color.RED),
+                DeckFactory.createPokerCard(6, Card.Color.RED),
+                DeckFactory.createPokerCard(4, Card.Color.GREEN),
+                DeckFactory.createPokerCard(5, Card.Color.RED),
+                DeckFactory.createPokerCard(3, Card.Color.RED),
+                DeckFactory.createMahjong()
+        };
+        var possibleStraight = new CardCollection(Arrays.asList(cards));
+        assertTrue(possibleStraight.isStraight());
+    }
+    @Test
+    void DragonDoesNotBelongInStraight(){
+        var cards = new Card[]{
+                DeckFactory.createPokerCard(11, Card.Color.RED),
+                DeckFactory.createPokerCard(13, Card.Color.RED),
+                DeckFactory.createPokerCard(12, Card.Color.GREEN),
+                DeckFactory.createPokerCard(10, Card.Color.RED),
+                DeckFactory.createDragon()
+        };
+        var possibleStraight = new CardCollection(Arrays.asList(cards));
+        assertFalse(possibleStraight.isStraight());
+    }
 }

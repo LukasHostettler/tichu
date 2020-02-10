@@ -43,7 +43,7 @@ public class DeckFactory {
     }
 
     public static Card createPokerCard(int value, Card.Color color) {
-        if (value < 2 || value > 13) throw new IllegalArgumentException("Value must be is between 2 and 13");
+        if (value < 2 || value > 14) throw new IllegalArgumentException("Value must be is between 2 and 14");
         if (!validColors.contains(color)) throw new IllegalArgumentException("invalid color");
         var card = new Card();
         card.color = color;

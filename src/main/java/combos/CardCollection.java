@@ -187,19 +187,22 @@ public class CardCollection extends ArrayList<Card> {
         var withoutPhoenix = this.withoutPhoenix();
         withoutPhoenix.sort(Card::compareTo);
         Double lastValue = null;
-        for (int index = 0; index < withoutPhoenix.size(); index = index + 2) {
+        for (int index = 0; index < withoutPhoenix.size()-1; index = index + 2) {
             var cards = new Card[]{withoutPhoenix.get(index), withoutPhoenix.get(index + 1)};
+            if (lastValue != null && cards[0].getValue() != lastValue + 1)
+                return false;
+            lastValue = cards[0].getValue();
+
             var testPair = new CardCollection(Arrays.asList(cards));
             if (testPair.isPair()) {
-                if (lastValue == null || cards[0].getValue() == lastValue + 1)
-                    lastValue = cards[0].getValue();
-                else return false;
-            } else if (hasPhoenix) {
-                hasPhoenix = false;
-                lastValue = cards[0].getValue();
-                index -= 1; // test the other pair as well.
-            } else
+                continue;
+            }
+            if (!hasPhoenix) {
                 return false;
+            } else {
+                hasPhoenix = false;
+                index -= 1; // test the other pair as well.
+            }
         }
         return true;
     }

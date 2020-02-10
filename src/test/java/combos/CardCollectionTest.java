@@ -167,4 +167,29 @@ class CardCollectionTest {
         var possibleStraight = new CardCollection(Arrays.asList(cards));
         assertFalse(possibleStraight.isStraight());
     }
+    @Test
+    void PairsOfCardsIsValidPairsOfCard(){
+        var cards = new Card[]{
+                DeckFactory.createPokerCard(6, Card.Color.BLUE),
+                DeckFactory.createPokerCard(5, Card.Color.RED),
+                DeckFactory.createPokerCard(7, Card.Color.BLACK),
+                DeckFactory.createPokerCard(7, Card.Color.RED),
+                DeckFactory.createPokerCard(5, Card.Color.GREEN),
+                DeckFactory.createPokerCard(6, Card.Color.RED),
+        };
+        assertTrue(new CardCollection(Arrays.asList(cards)).isConsequtivePair());
+    }
+
+    @Test
+    void PairsOfCardsWithPhoenixIsValidPairsOfCard(){
+        var cards = new Card[]{
+                DeckFactory.createPokerCard(6, Card.Color.BLUE),
+                DeckFactory.createPokerCard(5, Card.Color.RED),
+                DeckFactory.createPhoenix(),
+                DeckFactory.createPokerCard(7, Card.Color.RED),
+                DeckFactory.createPokerCard(5, Card.Color.GREEN),
+                DeckFactory.createPokerCard(6, Card.Color.RED),
+        };
+        assertTrue(new CardCollection(Arrays.asList(cards)).isConsequtivePair());
+    }
 }

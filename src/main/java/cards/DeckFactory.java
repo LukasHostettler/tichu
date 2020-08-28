@@ -3,6 +3,7 @@ package cards;
 import combos.CardCollection;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class DeckFactory {
@@ -24,6 +25,12 @@ public class DeckFactory {
         cards.add(createDragon());
         cards.add(createPhoenix());
         return cards;
+    }
+
+    public static CardCollection createShuffledDeck(){
+        var deck = createDeck();
+        Collections.shuffle(deck);
+        return deck;
     }
 
     public static Card createDog() {

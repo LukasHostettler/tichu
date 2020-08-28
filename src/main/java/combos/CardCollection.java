@@ -4,6 +4,7 @@ import cards.Card;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Optional;
 
 
 public class CardCollection extends ArrayList<Card> {
@@ -20,7 +21,26 @@ public class CardCollection extends ArrayList<Card> {
             this.add(card);
         }
     }
-
+    public Optional<Card> peek(){
+        var numItems = this.size();
+        if(numItems>1){
+            var card = this.get(numItems-1);
+            return Optional.of(card);
+        }
+        else{
+            return Optional.empty();
+        }
+    }
+    public Optional<Card> pop(){
+        var numItems = this.size();
+        if(numItems>1){
+            var card = this.remove(numItems-1);
+            return Optional.of(card);
+        }
+        else{
+            return Optional.empty();
+        }
+    }
 
     private static int byValue(Card c1, Card c2) {
         return (int) (c1.getValue() - c2.getValue());
@@ -218,5 +238,9 @@ public class CardCollection extends ArrayList<Card> {
 
     boolean isStraightBomb() {
         return isStraight() && allEqualColor();
+    }
+
+    public int getAccountValue(){
+        return this.stream().map(x->x.getAccountValue()).reduce(0,Integer::sum);
     }
 }

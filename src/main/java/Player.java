@@ -1,5 +1,6 @@
 import cards.Card;
 import combos.CardCollection;
+import combos.ComboType;
 
 import java.util.Arrays;
 import java.util.List;
@@ -23,10 +24,14 @@ public class Player {
     }
 
     public CardCollection play(CardCollection lastCombo){
-        if(lastCombo.isPair()){
+        var lastComboType = lastCombo.getComboType();
+        if(lastComboType == ComboType.None){ //We are first to play! todo handle this
+            var superset =handCards.superset();
 
+            lastComboType = ComboType.Single;
         }
-        var playCards = lastCombo;
+        var possibleCombos =handCards.subCombosOfType(lastComboType);
+        var playCards = possibleCombos.stream().findFirst().orElse(new CardCollection());
         handCards.removeAll(playCards);
         return playCards;
 

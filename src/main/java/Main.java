@@ -47,6 +47,7 @@ public class Main {
                     }
                 }
                 var playedCards = player.play(lastCombo);
+                System.out.print("player "+player+" plays"+ playedCards+"\n");
                 //check validity
                 if(playedCards.size() > 0){
                     lastCombo= playedCards;

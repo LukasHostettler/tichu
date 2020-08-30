@@ -2,11 +2,8 @@ package combos;
 
 import cards.Card;
 
-import javax.management.BadAttributeValueExpException;
-import java.time.temporal.ValueRange;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 ;
 
@@ -173,6 +170,35 @@ public class CardCollection extends ArrayList<Card> {
             return pair2.isPair();
         }
         return false;
+    }
+    public List<CardCollection> superset(){
+        int n = this.size();
+        var subcombos = new LinkedList<CardCollection>();
+        // Run a loop for printing all 2^n
+        // subsets one by one
+        for (int i = 0; i < (1<<n); i++)
+        {
+            var subcombo = new CardCollection();
+            // Print current subset
+            for (int j = 0; j < n; j++)
+
+                // (1<<j) is a number with jth bit 1
+                // so when we 'and' them with the
+                // subset number we get which numbers
+                // are present in the subset and which
+                // are not
+                if ((i & (1 << j)) > 0)
+                    subcombo.add(this.get(j));
+
+            subcombos.add(subcombo);
+        }
+        return subcombos;
+    }
+    public List<CardCollection> subCombosOfType(ComboType comboType){
+        var superSet= superset();
+        //var ofSameLength = superSet.stream().filter(); optimization
+        return superSet.stream().filter(x->x.getComboType() == comboType).collect(Collectors.toList());
+
     }
 
     public boolean isStraight() {

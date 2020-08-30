@@ -37,6 +37,10 @@ public class Card implements Comparable<Card> {
 
     @Override
     public String toString() {
+        return color+" "+value;
+    }
+
+    public String toJson() {
         return "Card{" +
                 "value=" + value +
                 ", color=" + color +

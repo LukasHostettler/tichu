@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 ;
 
 public class CardCollection extends ArrayList<Card> {
+    public static final double NONEXISTENT_COMBO_VALUE = -1.0;
     public CardCollection() {
         super();
     }
@@ -79,26 +80,26 @@ public class CardCollection extends ArrayList<Card> {
         return true;
     }
 
-    private boolean allEqualValue() {
+    private Double allEqualValue() {
         Double value = null;
         for (var item : this) {
             if (value == null) {
                 value = item.getValue();
             } else {
                 if (item.getValue() != value)
-                    return false;
+                    return NONEXISTENT_COMBO_VALUE;
             }
         }
-        return true;
+        return value;
     }
 
-    public boolean isSingle() {
-        return this.size() == 1;
+    public Double isSingle() {
+        return this.size() == 1 ? this.get(0).getValue() : NONEXISTENT_COMBO_VALUE;
     }
 
-    public boolean isPair() {
+    public Double isPair() {
         if (this.size() != 2 || containsNonComboCard())
-            return false;
+            return NONEXISTENT_COMBO_VALUE;
         if (this.containsPhoenix()) {
             var withoutPhoenix = this.withoutPhoenix();
             return withoutPhoenix.isSingle();
@@ -107,9 +108,9 @@ public class CardCollection extends ArrayList<Card> {
         }
     }
 
-    public boolean isTriple() {
+    public Double isTriple() {
         if (this.size() != 3 || containsNonComboCard())
-            return false;
+            return NONEXISTENT_COMBO_VALUE;
         if (this.containsPhoenix()) {
             var withoutPhoenix = this.withoutPhoenix();
             return withoutPhoenix.isPair();
@@ -118,9 +119,9 @@ public class CardCollection extends ArrayList<Card> {
         }
     }
 
-    public boolean isQuadruple() {
+    public Double isQuadruple() {
         if (this.size() != 4 || containsNonComboCard())
-            return false;
+            return NONEXISTENT_COMBO_VALUE;
         if (this.containsPhoenix()) {
             var withoutPhoenix = this.withoutPhoenix();
             return withoutPhoenix.isTriple();
@@ -137,9 +138,9 @@ public class CardCollection extends ArrayList<Card> {
         return false;
     }
 
-    public boolean isFullHouse() {
+    public Double isFullHouse() {
         if (size() != 5 || containsNonComboCard()) {
-            return false;
+            return NONEXISTENT_COMBO_VALUE;
         }
         var copy = new CardCollection(this);
         if (copy.containsPhoenix()) {
@@ -148,28 +149,28 @@ public class CardCollection extends ArrayList<Card> {
             // either  pair pair
             var pair1 = new CardCollection(withoutPhoenix.subList(0, 2));
             var pair2 = new CardCollection(withoutPhoenix.subList(2, 4));
-            if (pair1.isPair() && pair2.isPair())
-                return true;
+            var pair1value =pair1.isPair();
+            var pair2value =pair2.isPair();
+            if (pair1value != NONEXISTENT_COMBO_VALUE && pair2value != NONEXISTENT_COMBO_VALUE )
+                return Double.max(pair1value,pair2value);// For simplicity the special case of the phoenix being the smaller is ignored..
             else {
-                // or single triple
+                // or single +  triple
                 var triple1 = new CardCollection(withoutPhoenix.subList(0, 3));
                 var triple2 = new CardCollection(withoutPhoenix.subList(1, 4));
-                return triple1.isTriple() || triple2.isTriple();
+                return Double.max(triple1.isTriple() ,triple2.isTriple());
             }
         }
-        copy.sort(CardCollection::byValue);
 
-        var triple1 = new CardCollection(copy.subList(0, 3));
-        if (triple1.isTriple()) {
-            var pair1 = new CardCollection(copy.subList(3, 5));
-            return pair1.isPair();
-        }
-        var triple2 = new CardCollection(copy.subList(2, 5));
-        if (triple2.isTriple()) {
-            var pair2 = new CardCollection(copy.subList(0, 2));
-            return pair2.isPair();
-        }
-        return false;
+        copy.sort(CardCollection::byValue);
+        var pair1value = new CardCollection(copy.subList(0, 2)).isPair();
+        var pair2value = new CardCollection(copy.subList(3, 5)).isPair();
+        var singleValue = new CardCollection(copy.subList(2,3)).isSingle();
+        if(     pair1value != NONEXISTENT_COMBO_VALUE
+                && pair2value != NONEXISTENT_COMBO_VALUE
+                && ((pair1value.doubleValue() == singleValue) || pair2value.doubleValue() == singleValue))
+            return singleValue;
+
+        return NONEXISTENT_COMBO_VALUE;
     }
     public List<CardCollection> superset(){
         int n = this.size();
@@ -201,9 +202,9 @@ public class CardCollection extends ArrayList<Card> {
 
     }
 
-    public boolean isStraight() {
+    public Double isStraight() {
         if (size() < 5)
-            return false;
+            return NONEXISTENT_COMBO_VALUE;
         var copy = new CardCollection(this);
         copy.sort(Card::compareTo);
         var numSkips = 0;
@@ -218,67 +219,76 @@ public class CardCollection extends ArrayList<Card> {
                     numSkips -= 1;
                 }
                 if (numSkips < 0) {
-                    return false;
+                    return NONEXISTENT_COMBO_VALUE;
                 }
             }
             value = card.getValue();
         }
-        return true;
+        return Double.min(value+numSkips,14); //if additional phoenix it is always at the end (unless for the ace)
     }
 
 
-    boolean isConsequtivePair() {
+    Double isConsequtivePair() {
         if (size() < 4 || size() % 2 == 1)
-            return false;
+            return NONEXISTENT_COMBO_VALUE;
         if (containsNonComboCard())
-            return false;
+            return NONEXISTENT_COMBO_VALUE;
         var hasPhoenix = this.containsPhoenix();
         var withoutPhoenix = this.withoutPhoenix();
         withoutPhoenix.sort(Card::compareTo);
         Double lastValue = null;
-        for (int index = 0; index < withoutPhoenix.size() - 1; index = index + 2) {
-            var cards = new Card[]{withoutPhoenix.get(index), withoutPhoenix.get(index + 1)};
+        for (int index = 1; index < withoutPhoenix.size(); index = index + 2) {
+            var cards = new Card[]{withoutPhoenix.get(index-1), withoutPhoenix.get(index)};
             if (lastValue != null && cards[0].getValue() != lastValue + 1)
-                return false;
+                return NONEXISTENT_COMBO_VALUE;
             lastValue = cards[0].getValue();
 
             var testPair = new CardCollection(Arrays.asList(cards));
-            if (testPair.isPair()) {
+            if (testPair.isPair() != NONEXISTENT_COMBO_VALUE) {
                 continue;
             }
             if (!hasPhoenix) {
-                return false;
+                return NONEXISTENT_COMBO_VALUE;
             } else {
                 hasPhoenix = false;
                 index -= 1; // test the other pair as well.
             }
         }
-        return true;
+        if(hasPhoenix){
+            var valueOfLastCard = withoutPhoenix.peek().orElseThrow().getValue();
+            if(valueOfLastCard == lastValue+1)
+                return valueOfLastCard;
+            else
+                return NONEXISTENT_COMBO_VALUE;
+        }
+        return lastValue;
     }
 
 
-    boolean isQuartetBomb() {
+    Double isQuartetBomb() {
         if (this.size() != 4)
-            return false;
+            return NONEXISTENT_COMBO_VALUE;
         if (this.containsPhoenix())
-            return false;
+            return NONEXISTENT_COMBO_VALUE;
         return isQuadruple();
     }
 
-    boolean isStraightBomb() {
-        return isStraight() && allEqualColor();
+    Double isStraightBomb() {
+        return allEqualColor()? isStraight() : NONEXISTENT_COMBO_VALUE;
     }
 
     public ComboType getComboType() {
-        if(isSingle())
+        if(isQuartetBomb() != NONEXISTENT_COMBO_VALUE)
+            return ComboType.QuartetBomb;
+        if(isSingle() != NONEXISTENT_COMBO_VALUE )
             return ComboType.Single;
-        if(isPair())
+        if(isPair() != NONEXISTENT_COMBO_VALUE )
             return ComboType.Pair;
-        if(isTriple())
+        if(isTriple() != NONEXISTENT_COMBO_VALUE )
             return  ComboType.Tripple;
-        if(isFullHouse())
+        if(isFullHouse() != NONEXISTENT_COMBO_VALUE )
             return ComboType.FullHouse;
-        if(isConsequtivePair()){
+        if(isConsequtivePair() != NONEXISTENT_COMBO_VALUE){
             switch (size()){
                 case 2:
                     return ComboType.Consequtive2Pairs;
@@ -297,7 +307,7 @@ public class CardCollection extends ArrayList<Card> {
 
             }
         }
-        if(isStraightBomb()){
+        if(isStraightBomb() != NONEXISTENT_COMBO_VALUE){
             switch (size()){
                 case 5:
                     return ComboType.Straight5Bomb;
@@ -321,7 +331,7 @@ public class CardCollection extends ArrayList<Card> {
                     throw new Error("straightbomb of unexpected size");
             }
         }
-        if(isStraight()){
+        if(isStraight() != NONEXISTENT_COMBO_VALUE){
             switch (size()){
                 case 5:
                     return ComboType.Straight5;
@@ -344,7 +354,7 @@ public class CardCollection extends ArrayList<Card> {
                 case 14:
                     return ComboType.Straight14;
                 default:
-                    throw new Error("straightbomb of unexpected size");
+                    throw new Error("straight of unexpected size");
             }
         }
 

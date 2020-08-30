@@ -31,4 +31,5 @@ public enum ComboType{
     Straight11Bomb,
     Straight12Bomb,
     Straight13Bomb,
+    QuartetBomb
 }

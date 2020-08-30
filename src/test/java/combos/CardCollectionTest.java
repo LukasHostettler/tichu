@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 
+import static combos.CardCollection.NONEXISTENT_COMBO_VALUE;
 import static org.junit.jupiter.api.Assertions.*;
 
 class CardCollectionTest {
@@ -44,7 +45,7 @@ class CardCollectionTest {
         for (var card : deck) {
             var singleCardCollection = new CardCollection();
             singleCardCollection.add(card);
-            assertEquals(singleCardCollection.isSingle(), true);
+            assertEquals(singleCardCollection.isSingle()!= NONEXISTENT_COMBO_VALUE, true);
 
         }
     }
@@ -53,7 +54,7 @@ class CardCollectionTest {
     void twoKingsIsAValidPair() {
         var possiblePair = new CardCollection();
         addBlueRedKing(possiblePair);
-        assertEquals(possiblePair.isPair(), true);
+        assertEquals(possiblePair.isPair(), 13);
     }
 
     @Test
@@ -61,7 +62,7 @@ class CardCollectionTest {
         var possiblePair = new CardCollection();
         possiblePair.add(blackKing);
         possiblePair.add(dragon);
-        assertEquals(possiblePair.isPair(), false);
+        assertEquals(possiblePair.isPair(), NONEXISTENT_COMBO_VALUE);
     }
 
     @Test
@@ -69,7 +70,7 @@ class CardCollectionTest {
         var possiblePair = new CardCollection();
         possiblePair.add(blackKing);
         possiblePair.add(phoenix);
-        assertTrue(possiblePair.isPair());
+        assertEquals(possiblePair.isPair(),13);
     }
 
 
@@ -78,7 +79,7 @@ class CardCollectionTest {
         var possibleTriple = new CardCollection();
         possibleTriple.add(blackKing);
         addBlueRedKing(possibleTriple);
-        assertEquals(possibleTriple.isTriple(), true);
+        assertEquals(blackKing.getValue(),possibleTriple.isTriple());
     }
 
     @Test
@@ -86,7 +87,7 @@ class CardCollectionTest {
         var possibleTriple = new CardCollection();
         possibleTriple.add(phoenix);
         addBlueRedKing(possibleTriple);
-        assertEquals(possibleTriple.isTriple(), true);
+        assertEquals(blackKing.getValue(), possibleTriple.isTriple());
     }
 
     @Test
@@ -95,7 +96,7 @@ class CardCollectionTest {
         possibleFullhouse.add(phoenix);
         addBlueRedKing(possibleFullhouse);
         addBlueRedQueen(possibleFullhouse);
-        assertEquals(possibleFullhouse.isFullHouse(), true);
+        assertEquals(blackKing.getValue(),possibleFullhouse.isFullHouse());
     }
 
     @Test
@@ -104,7 +105,7 @@ class CardCollectionTest {
         possibleFullhouse.add(blackKing);
         addBlueRedKing(possibleFullhouse);
         addBlueRedQueen(possibleFullhouse);
-        assertEquals(possibleFullhouse.isFullHouse(), true);
+        assertEquals(blackKing.getValue(),possibleFullhouse.isFullHouse());
     }
 
     @Test
@@ -113,7 +114,7 @@ class CardCollectionTest {
         addBlueRedKing(possibleFullhouse);
         possibleFullhouse.add(DeckFactory.createPokerCard(2, Card.Color.RED));
         addBlueRedQueen(possibleFullhouse);
-        assertEquals(possibleFullhouse.isFullHouse(), false);
+        assertEquals(NONEXISTENT_COMBO_VALUE, possibleFullhouse.isFullHouse());
     }
 
     @Test
@@ -126,7 +127,7 @@ class CardCollectionTest {
                 DeckFactory.createPokerCard(3, Card.Color.RED),
         };
         var possibleStraight = new CardCollection(Arrays.asList(cards));
-        assertTrue(possibleStraight.isStraight());
+        assertEquals(6,possibleStraight.isStraight());
     }
 
     @Test
@@ -139,7 +140,20 @@ class CardCollectionTest {
                 DeckFactory.createPokerCard(3, Card.Color.RED),
         };
         var possibleStraight = new CardCollection(Arrays.asList(cards));
-        assertTrue(possibleStraight.isStraight());
+        assertEquals(7, possibleStraight.isStraight());
+    }
+
+    @Test
+    void APhoenixCanNotMakeTheStraightGoBeyondTheAce() {
+        var cards = new Card[]{
+                DeckFactory.createPokerCard(11, Card.Color.RED),
+                DeckFactory.createPokerCard(12, Card.Color.RED),
+                DeckFactory.createPhoenix(),
+                DeckFactory.createPokerCard(13, Card.Color.RED),
+                DeckFactory.createPokerCard(14, Card.Color.RED),
+        };
+        var possibleStraight = new CardCollection(Arrays.asList(cards));
+        assertEquals(14, possibleStraight.isStraight());
     }
 
     @Test
@@ -153,7 +167,7 @@ class CardCollectionTest {
                 DeckFactory.createMahjong()
         };
         var possibleStraight = new CardCollection(Arrays.asList(cards));
-        assertTrue(possibleStraight.isStraight());
+        assertEquals(6,possibleStraight.isStraight());
     }
 
     @Test
@@ -166,7 +180,7 @@ class CardCollectionTest {
                 DeckFactory.createDragon()
         };
         var possibleStraight = new CardCollection(Arrays.asList(cards));
-        assertFalse(possibleStraight.isStraight());
+        assertEquals(NONEXISTENT_COMBO_VALUE, possibleStraight.isStraight());
     }
 
     @Test
@@ -179,7 +193,7 @@ class CardCollectionTest {
                 DeckFactory.createPokerCard(5, Card.Color.GREEN),
                 DeckFactory.createPokerCard(6, Card.Color.RED),
         };
-        assertTrue(new CardCollection(Arrays.asList(cards)).isConsequtivePair());
+        assertEquals(7,new CardCollection(Arrays.asList(cards)).isConsequtivePair());
     }
 
     @Test
@@ -192,7 +206,20 @@ class CardCollectionTest {
                 DeckFactory.createPokerCard(5, Card.Color.GREEN),
                 DeckFactory.createPokerCard(6, Card.Color.RED),
         };
-        assertTrue(new CardCollection(Arrays.asList(cards)).isConsequtivePair());
+        assertEquals(7,new CardCollection(Arrays.asList(cards)).isConsequtivePair());
+    }
+
+    @Test
+    void PairsOfCardsWithPhoenixLastCardIsValidatedToo() {
+        var cards = new Card[]{
+                DeckFactory.createPokerCard(6, Card.Color.BLUE),
+                DeckFactory.createPokerCard(5, Card.Color.RED),
+                DeckFactory.createPhoenix(),
+                DeckFactory.createPokerCard(8, Card.Color.RED),
+                DeckFactory.createPokerCard(5, Card.Color.GREEN),
+                DeckFactory.createPokerCard(6, Card.Color.RED),
+        };
+        assertEquals(NONEXISTENT_COMBO_VALUE,new CardCollection(Arrays.asList(cards)).isConsequtivePair());
     }
 
     @Test
@@ -205,7 +232,7 @@ class CardCollectionTest {
                 DeckFactory.createPokerCard(6, Card.Color.GREEN),
                 DeckFactory.createPokerCard(5, Card.Color.BLUE)
         };
-        assertFalse(new CardCollection(Arrays.asList(cards)).isConsequtivePair());
+        assertEquals(NONEXISTENT_COMBO_VALUE, new CardCollection(Arrays.asList(cards)).isConsequtivePair());
     }
 
     @Test
@@ -216,7 +243,7 @@ class CardCollectionTest {
                 DeckFactory.createPokerCard(6, Card.Color.RED),
                 DeckFactory.createPokerCard(6, Card.Color.GREEN),
         };
-        assertTrue(new CardCollection(Arrays.asList(cards)).isQuartetBomb());
+        assertEquals(6, new CardCollection(Arrays.asList(cards)).isQuartetBomb());
     }
 
 }

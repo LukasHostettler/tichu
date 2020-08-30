@@ -2,9 +2,7 @@ import cards.Card;
 import combos.CardCollection;
 import combos.ComboType;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 
 public class Player {
     private CardCollection handCards;
@@ -23,14 +21,15 @@ public class Player {
         gainedCards.addAll(cards);
     }
 
-    public CardCollection play(CardCollection lastCombo){
-        var lastComboType = lastCombo.getComboType();
-        if(lastComboType == ComboType.None){ //We are first to play! todo handle this
+    public CardCollection play(CardCollection lastPlayed){
+        var lastCombo = lastPlayed.getComboType();
+        if(lastCombo.comboType == ComboType.None){ //We are first to play! todo handle this
             var superset =handCards.superset();
+            // here we can choose the mode ...
+            lastCombo.comboType = ComboType.Single;
 
-            lastComboType = ComboType.Single;
         }
-        var possibleCombos =handCards.subCombosOfType(lastComboType);
+        var possibleCombos =handCards.getBeatingCombos(lastCombo);
         var playCards = possibleCombos.stream().findFirst().orElse(new CardCollection());
         handCards.removeAll(playCards);
         return playCards;

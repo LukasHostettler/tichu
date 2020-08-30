@@ -195,10 +195,13 @@ public class CardCollection extends ArrayList<Card> {
         }
         return subcombos;
     }
-    public List<CardCollection> subCombosOfType(ComboType comboType){
+    public List<CardCollection> getBeatingCombos(Combo toBeat){
         var superSet= superset();
         //var ofSameLength = superSet.stream().filter(); optimization
-        return superSet.stream().filter(x->x.getComboType() == comboType).collect(Collectors.toList());
+        return superSet.stream().filter(x->{
+            var combo = x.getComboType();
+            return combo.comboType == toBeat.comboType && combo.value > toBeat.value;
+        }).collect(Collectors.toList());
 
     }
 
@@ -277,89 +280,102 @@ public class CardCollection extends ArrayList<Card> {
         return allEqualColor()? isStraight() : NONEXISTENT_COMBO_VALUE;
     }
 
-    public ComboType getComboType() {
-        if(isQuartetBomb() != NONEXISTENT_COMBO_VALUE)
-            return ComboType.QuartetBomb;
-        if(isSingle() != NONEXISTENT_COMBO_VALUE )
-            return ComboType.Single;
-        if(isPair() != NONEXISTENT_COMBO_VALUE )
-            return ComboType.Pair;
-        if(isTriple() != NONEXISTENT_COMBO_VALUE )
-            return  ComboType.Tripple;
-        if(isFullHouse() != NONEXISTENT_COMBO_VALUE )
-            return ComboType.FullHouse;
-        if(isConsequtivePair() != NONEXISTENT_COMBO_VALUE){
+    public Combo getComboType() {
+        var tempValue = isQuartetBomb();
+        if(tempValue != NONEXISTENT_COMBO_VALUE)
+            return new Combo(ComboType.QuartetBomb,tempValue);
+
+        tempValue = isSingle();
+        if(tempValue != NONEXISTENT_COMBO_VALUE )
+            return new Combo(ComboType.Single,tempValue);
+
+        tempValue = isPair();
+        if(tempValue != NONEXISTENT_COMBO_VALUE )
+            return new Combo(ComboType.Pair,tempValue);
+
+        tempValue = isTriple();
+        if(tempValue!= NONEXISTENT_COMBO_VALUE )
+            return new Combo(ComboType.Tripple,tempValue);
+
+        tempValue = isFullHouse();
+        if(tempValue!= NONEXISTENT_COMBO_VALUE )
+            return new Combo(ComboType.FullHouse,tempValue);
+
+        tempValue = isConsequtivePair();
+        if(tempValue != NONEXISTENT_COMBO_VALUE){
             switch (size()){
                 case 2:
-                    return ComboType.Consequtive2Pairs;
+                    return new Combo(ComboType.Consequtive2Pairs,tempValue);
                 case 3:
-                    return ComboType.Consequtive3Pairs;
+                    return new Combo(ComboType.Consequtive3Pairs,tempValue);
                 case 4:
-                    return ComboType.Consequtive4Pairs;
+                    return new Combo(ComboType.Consequtive4Pairs,tempValue);
                 case 5:
-                    return ComboType.Consequtive5Pairs;
+                    return new Combo(ComboType.Consequtive5Pairs,tempValue);
                 case 6:
-                    return ComboType.Consequtive6Pairs;
+                    return new Combo(ComboType.Consequtive6Pairs,tempValue);
                 case 7:
-                    return ComboType.Consequtive7Pairs;
+                    return new Combo(ComboType.Consequtive7Pairs,tempValue);
                 default:
                     throw new Error("longer combo than ever thought");
 
             }
         }
-        if(isStraightBomb() != NONEXISTENT_COMBO_VALUE){
+        tempValue = isStraightBomb();
+        if(tempValue != NONEXISTENT_COMBO_VALUE){
             switch (size()){
                 case 5:
-                    return ComboType.Straight5Bomb;
+                    return new Combo(ComboType.Straight5Bomb,tempValue);
                 case 6:
-                    return ComboType.Straight6Bomb;
+                    return new Combo(ComboType.Straight6Bomb,tempValue);
                 case 7:
-                    return ComboType.Straight7Bomb;
+                    return new Combo(ComboType.Straight7Bomb,tempValue);
                 case 8:
-                    return ComboType.Straight8Bomb;
+                    return new Combo(ComboType.Straight8Bomb,tempValue);
                 case 9:
-                    return ComboType.Straight9Bomb;
+                    return new Combo(ComboType.Straight9Bomb,tempValue);
                 case 10:
-                    return ComboType.Straight10Bomb;
+                    return new Combo(ComboType.Straight10Bomb,tempValue);
                 case 11:
-                    return ComboType.Straight11Bomb;
+                    return new Combo(ComboType.Straight11Bomb,tempValue);
                 case 12:
-                    return ComboType.Straight12Bomb;
+                    return new Combo(ComboType.Straight12Bomb,tempValue);
                 case 13:
-                    return ComboType.Straight13Bomb;
+                    return new Combo(ComboType.Straight13Bomb,tempValue);
                 default:
                     throw new Error("straightbomb of unexpected size");
             }
         }
-        if(isStraight() != NONEXISTENT_COMBO_VALUE){
+        tempValue = isStraight();
+        if(tempValue != NONEXISTENT_COMBO_VALUE){
             switch (size()){
                 case 5:
-                    return ComboType.Straight5;
+                    return new Combo(ComboType.Straight5,tempValue);
                 case 6:
-                    return ComboType.Straight6;
+                    return new Combo(ComboType.Straight6,tempValue);
                 case 7:
-                    return ComboType.Straight7;
+                    return new Combo(ComboType.Straight7,tempValue);
                 case 8:
-                    return ComboType.Straight8;
+                    return new Combo(ComboType.Straight8,tempValue);
                 case 9:
-                    return ComboType.Straight9;
+                    return new Combo(ComboType.Straight9,tempValue);
                 case 10:
-                    return ComboType.Straight10;
+                    return new Combo(ComboType.Straight10,tempValue);
                 case 11:
-                    return ComboType.Straight11;
+                    return new Combo(ComboType.Straight11,tempValue);
                 case 12:
-                    return ComboType.Straight12;
+                    return new Combo(ComboType.Straight12,tempValue);
                 case 13:
-                    return ComboType.Straight13;
+                    return new Combo(ComboType.Straight13,tempValue);
                 case 14:
-                    return ComboType.Straight14;
+                    return new Combo(ComboType.Straight14,tempValue);
                 default:
                     throw new Error("straight of unexpected size");
             }
         }
 
 
-        return ComboType.None;
+        return new Combo(ComboType.None,NONEXISTENT_COMBO_VALUE);
     }
 
     public int getAccountValue(){

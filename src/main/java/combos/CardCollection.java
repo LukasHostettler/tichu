@@ -2,10 +2,13 @@ package combos;
 
 import cards.Card;
 
+import javax.management.BadAttributeValueExpException;
+import java.time.temporal.ValueRange;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
 
+;
 
 public class CardCollection extends ArrayList<Card> {
     public CardCollection() {
@@ -33,7 +36,7 @@ public class CardCollection extends ArrayList<Card> {
     }
     public Optional<Card> pop(){
         var numItems = this.size();
-        if(numItems>1){
+        if(numItems>=1){
             var card = this.remove(numItems-1);
             return Optional.of(card);
         }
@@ -238,6 +241,89 @@ public class CardCollection extends ArrayList<Card> {
 
     boolean isStraightBomb() {
         return isStraight() && allEqualColor();
+    }
+
+    public ComboType getComboType() {
+        if(isSingle())
+            return ComboType.Single;
+        if(isPair())
+            return ComboType.Pair;
+        if(isTriple())
+            return  ComboType.Tripple;
+        if(isFullHouse())
+            return ComboType.FullHouse;
+        if(isConsequtivePair()){
+            switch (size()){
+                case 2:
+                    return ComboType.Consequtive2Pairs;
+                case 3:
+                    return ComboType.Consequtive3Pairs;
+                case 4:
+                    return ComboType.Consequtive4Pairs;
+                case 5:
+                    return ComboType.Consequtive5Pairs;
+                case 6:
+                    return ComboType.Consequtive6Pairs;
+                case 7:
+                    return ComboType.Consequtive7Pairs;
+                default:
+                    throw new Error("longer combo than ever thought");
+
+            }
+        }
+        if(isStraightBomb()){
+            switch (size()){
+                case 5:
+                    return ComboType.Straight5Bomb;
+                case 6:
+                    return ComboType.Straight6Bomb;
+                case 7:
+                    return ComboType.Straight7Bomb;
+                case 8:
+                    return ComboType.Straight8Bomb;
+                case 9:
+                    return ComboType.Straight9Bomb;
+                case 10:
+                    return ComboType.Straight10Bomb;
+                case 11:
+                    return ComboType.Straight11Bomb;
+                case 12:
+                    return ComboType.Straight12Bomb;
+                case 13:
+                    return ComboType.Straight13Bomb;
+                default:
+                    throw new Error("straightbomb of unexpected size");
+            }
+        }
+        if(isStraight()){
+            switch (size()){
+                case 5:
+                    return ComboType.Straight5;
+                case 6:
+                    return ComboType.Straight6;
+                case 7:
+                    return ComboType.Straight7;
+                case 8:
+                    return ComboType.Straight8;
+                case 9:
+                    return ComboType.Straight9;
+                case 10:
+                    return ComboType.Straight10;
+                case 11:
+                    return ComboType.Straight11;
+                case 12:
+                    return ComboType.Straight12;
+                case 13:
+                    return ComboType.Straight13;
+                case 14:
+                    return ComboType.Straight14;
+                default:
+                    throw new Error("straightbomb of unexpected size");
+            }
+        }
+
+
+        return ComboType.None;
     }
 
     public int getAccountValue(){

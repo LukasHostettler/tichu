@@ -3,6 +3,7 @@ package cards;
 public class Mahjong extends SpecialCard {
     private boolean wishSet;
     private Integer wish;
+
     Mahjong() {
         value = 1;
         accountValue = 0;

@@ -27,7 +27,7 @@ public class DeckFactory {
         return cards;
     }
 
-    public static CardCollection createShuffledDeck(){
+    public static CardCollection createShuffledDeck() {
         var deck = createDeck();
         Collections.shuffle(deck);
         return deck;

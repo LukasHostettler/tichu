@@ -5,8 +5,6 @@ import cards.Card;
 import java.util.*;
 import java.util.stream.Collectors;
 
-;
-
 public class CardCollection extends ArrayList<Card> {
     public static final double NONEXISTENT_COMBO_VALUE = -1.0;
     public CardCollection() {

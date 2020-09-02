@@ -1,11 +1,11 @@
-import cards.Card;
 import cards.DeckFactory;
 import cards.Dog;
 import cards.Dragon;
 import combos.CardCollection;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] args) {
@@ -26,40 +26,48 @@ public class Main {
             }
         }
         Player lastPlayer = null;
-        var currentPlayerIndex = 0;//Arrays.stream(players).mapToInt();
-
-        while(Arrays.stream(players).filter(x->x.numberOfHandCards()>0).toArray().length>2){
+        var currentPlayerIndex = 0;
+        var finishedPlayers = new LinkedList<Player>();
+        while(finishedPlayers.size()<3){
             var cardsOnTheTable = new CardCollection();
             var lastCombo = new CardCollection();
             while(true){
                 var player =  players[currentPlayerIndex];
-
                 if (player == lastPlayer){
+                    System.out.print("player "+player+" wins\n");
                     if(cardsOnTheTable.peek().orElseThrow().getClass() == Dragon.class ){
-                        player.donateCardsToOponent(new ArrayList<>(){}).winCards(cardsOnTheTable);// todo correctly chose players
-                        lastPlayer = null;
-                        break;
+                        var opponents = new Player[]{players[(currentPlayerIndex+1)%4], players[(currentPlayerIndex+3)%4]};
+                        player.donateCardsToOponent(Arrays.stream(opponents).collect(Collectors.toList())).winCards(cardsOnTheTable);// todo correctly chose players
                     }
                     else{
                         player.winCards(cardsOnTheTable);
+                    }
+                    lastPlayer = null;
+                    break;
+                }
+                if(player.numberOfHandCards() != 0){
+                    var playedCards = player.play(lastCombo);
+                    System.out.print("player "+player+" plays"+ playedCards+"\n");
+                    //check validity
+                    if(playedCards.size() > 0){
+                        lastCombo= playedCards;
+                        cardsOnTheTable.addAll(playedCards);
+                        lastPlayer = player;
+                    }
+                    if(cardsOnTheTable.peek().isPresent() && cardsOnTheTable.peek().get().getClass() == Dog.class){
                         lastPlayer = null;
-                        break;
+                        currentPlayerIndex = (currentPlayerIndex+1)%4;
                     }
                 }
-                var playedCards = player.play(lastCombo);
-                System.out.print("player "+player+" plays"+ playedCards+"\n");
-                //check validity
-                if(playedCards.size() > 0){
-                    lastCombo= playedCards;
-                    cardsOnTheTable.addAll(playedCards);
-                    lastPlayer = player;
-                }
-                if(cardsOnTheTable.peek().isPresent() && cardsOnTheTable.peek().get().getClass() == Dog.class){
-                    lastPlayer = null;
-                    currentPlayerIndex = (currentPlayerIndex+1)%4;
+                else {
+                    if(!finishedPlayers.contains(player)){
+                        finishedPlayers.add(player);
+                    }
                 }
                 currentPlayerIndex = (currentPlayerIndex+1)%4;
             }
+            var pointsOfLastPlayer = Arrays.stream(players).filter(player -> player.numberOfHandCards()>0).findFirst().orElseThrow().getAccountValue();
+
         }
 
         System.out.println(cards);

@@ -22,11 +22,11 @@ public class Player {
     }
 
     public CardCollection play(CardCollection lastPlayed){
-        var lastCombo = lastPlayed.getComboType();
-        if(lastCombo.comboType == ComboType.None){ //We are first to play! todo handle this
+        var lastCombo = lastPlayed.getCombo();
+        if(lastCombo.type == ComboType.None){ //We are first to play! todo handle this
             var superset =handCards.superset();
             // here we can choose the mode ...
-            lastCombo.comboType = ComboType.Single;
+            lastCombo.type = ComboType.Single;
 
         }
         var possibleCombos =handCards.getBeatingCombos(lastCombo);

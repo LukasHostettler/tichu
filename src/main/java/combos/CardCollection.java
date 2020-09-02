@@ -199,8 +199,8 @@ public class CardCollection extends ArrayList<Card> {
         var superSet= superset();
         //var ofSameLength = superSet.stream().filter(); optimization
         return superSet.stream().filter(x->{
-            var combo = x.getComboType();
-            return combo.comboType == toBeat.comboType && combo.value > toBeat.value;
+            var combo = x.getCombo();
+            return combo.type == toBeat.type && combo.value > toBeat.value;
         }).collect(Collectors.toList());
 
     }
@@ -280,7 +280,7 @@ public class CardCollection extends ArrayList<Card> {
         return allEqualColor()? isStraight() : NONEXISTENT_COMBO_VALUE;
     }
 
-    public Combo getComboType() {
+    public Combo getCombo() {
         var tempValue = isQuartetBomb();
         if(tempValue != NONEXISTENT_COMBO_VALUE)
             return new Combo(ComboType.QuartetBomb,tempValue);

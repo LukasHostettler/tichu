@@ -23,4 +23,9 @@ public class Mahjong extends SpecialCard {
             this.wishSet = true;
         }
     }
+
+    @Override
+    public boolean isMahjong() {
+        return true;
+    }
 }

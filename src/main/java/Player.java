@@ -11,9 +11,12 @@ public class Player {
         handCards = new CardCollection();
         gainedCards = new CardCollection();
     }
-    public void recieveCard(Card c){ // tichu announcement
+    public TichuAnnouncement recieveCard(Card c){ // tichu announcement
         handCards.add(c);
+        return TichuAnnouncement.None;
     }
+
+
     public int numberOfHandCards(){
         return handCards.size();
     }
@@ -39,6 +42,10 @@ public class Player {
     public Player donateCardsToOponent(List<Player> oponents){
         // dumb strategy
         return oponents.stream().findFirst().orElseThrow();
+    }
+
+    public boolean IsStartingPlayer(){
+        return handCards.stream().anyMatch(Card::isMahjong);
     }
     public int getAccountValue(){
         return gainedCards.getAccountValue();

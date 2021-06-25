@@ -31,6 +31,10 @@ public class Card implements Comparable<Card> {
         return false;
     }
 
+    public boolean isMahjong(){
+        return false;
+    }
+
     public boolean isSpecialCard() {
         return false;
     }
